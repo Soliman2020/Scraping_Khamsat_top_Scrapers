@@ -1,10 +1,17 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-
+from time import strftime,gmtime
 
 class FivesuperSpider(CrawlSpider):
     name = 'FiveSuper'
+    # use this settings here instead of using in settings.py
+    custom_settings = {
+        'ROBOTSTXT_OBEY' : False,   # Inforce website to accept running our spider for the web scrapping   
+        'FEED_FORMAT': 'csv',
+        'FEED_URI': f'KHAMSAT_{strftime("%Y-%m-%d_%H_%M", gmtime())}GMT.csv' # file name refer to the date and time.
+    }
+    
     allowed_domains = ['khamsat.com']
     start_urls = ['https://khamsat.com/search?q=scraping&siv=false&sr=4&no_keyword=false']
 
@@ -49,3 +56,12 @@ class FivesuperSpider(CrawlSpider):
                 'service_Link':response.url,
                 'seller_picture_link':avatar,
             }
+            
+# run file from internal terminal is not avaliable
+# because of website blocked the scraping by default
+# So I can't apply the following code
+
+# from scrapy.crawler import CrawlerProcess  # To run the process without switching to the terminal in case it is possible!
+# process = CrawlerProcess ()
+# process.crawl(FivesuperSpider)
+# process.start()
